@@ -45,6 +45,19 @@ app.post('/api/shorten', function(req, res){
 
 });
 
+app.get('/all', function(req, res){
+
+  Url.find({}, function(err, docs) {
+    var records = [];
+
+    docs.forEach(function(doc) {
+      records.push(doc);
+    });
+
+  res.json(records);
+})
+})
+
 app.get('/:encoded_id', function(req, res){
 
   var base58Id = req.params.encoded_id;
