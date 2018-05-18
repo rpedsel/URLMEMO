@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 
+import '../style.css';
+
 class Shortener extends Component {
     state = {
         formValues: {
@@ -8,6 +10,15 @@ class Shortener extends Component {
         },
         short_url:null
     }
+
+    resetHandler = () => {
+        this.setState({
+            formValues:{
+                message: "",
+                url: ""               
+            }
+        })
+      }
 
     changeHandler(event) {
         event.preventDefault();
@@ -20,9 +31,6 @@ class Shortener extends Component {
         this.setState({formValues})
     }
 
-    // componentDidMount() {
-               
-    // }
     componentDidUpdate(){
         console.log(this.state);
     }
@@ -48,35 +56,40 @@ class Shortener extends Component {
 
     clickHandler = (event) => {
         event.preventDefault();
-        //this.setState({ loading: true });
-        // const record = {
-        //     message: this.state.formessage,
-        //     long_url: this.state.
-        // };
-        // axios.post('/orders.json', order)
-        //     .then(response => {
-        //         this.setState({ loading: false });
-        //         this.props.history.push('/');
-        //     })
-        //     .catch(error => {
-        //         this.setState({ loading: false });
-        //     });
+
         this.callApiShorten()
             .then(res => this.setState({
                 short_url: res.short_url
             }))
             .catch(err => console.log(err));
+        this.resetHandler();
     }
 
     render() {
         return (
-        <form>
-            <input type="text" name="message" placeholder="Message" 
-                value={this.state.formValues["message"]} onChange={this.changeHandler.bind(this)} />
-            <input type="text" name="url" placeholder="URL"
-                value={this.state.formValues["url"]} onChange={this.changeHandler.bind(this)} />
-            <button onClick={this.clickHandler}>Submit</button>
-        </form>
+        <div>
+
+        <div className="grid">
+                <div className="grid__col--2"/>
+                <div className="grid__col--8"> 
+                  <form className="form">
+                    <label className="form__label--hidden" htmlFor="url">URL:</label> 
+                    <input className="form__input" type="text" name="url" id="url" placeholder="URL"
+                        value={this.state.formValues["url"]} onChange={this.changeHandler.bind(this)}/>
+              
+                    <label className="form__label--hidden" htmlFor="message">Message:</label>
+                    <textarea className="form__input" id="message" name="message" placeholder="Message..." rows="7" 
+                        value={this.state.formValues["message"]} onChange={this.changeHandler.bind(this)}/>
+              
+                     <input className="btn--default" type="submit" onClick={this.clickHandler}/>
+                     <input className="btn--warning" type="reset" onClick={this.resetHandler}/>
+                  </form>
+                </div>
+                <div className="grid__col--2"/>
+
+              </div>
+
+        </div>
         )
       }
 }
