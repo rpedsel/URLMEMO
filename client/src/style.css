@@ -372,7 +372,7 @@ footer {
       padding-top: 0.77778em;
       padding-bottom: 0.77778em; } }
 
-.nav__item--current a, .nav__item a:hover {
+.nav__item--current a, .nav__item a.active, .nav__item a:hover{
   color: #0b0b0b;
   border-color: #52bab3; }
 
