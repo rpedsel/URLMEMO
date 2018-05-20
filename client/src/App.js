@@ -4,11 +4,12 @@ import Posts from './containers/Posts';
 import Shortener from './containers/Shortener';
 import Message from './containers/Message';
 import Layout from './hoc/Layout';
+import Aux from './hoc/Aux';
 
 class App extends Component {
   render() {
     return (
-      <div>
+      <Aux>
         <Layout>
             <Switch>
               <Route path="/posts" component={Posts} />
@@ -16,7 +17,7 @@ class App extends Component {
               <Route path="/:id" component={Message} />
             </Switch>
         </Layout>
-      </div>
+      </Aux>
     );
   }
 }

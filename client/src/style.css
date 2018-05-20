@@ -234,7 +234,7 @@ h4 {
       margin-top: 2.625em; } }
 
 a {
-  color: #656a6e;
+  color: inherit;
   text-decoration: none;
   font-weight: 400; }
 
@@ -480,7 +480,8 @@ h2, .headline-secondary, .headline-secondary--grouped {
       width: auto;
       display: inline-block; }
       [class^="btn--"] + [class^="btn--"] {
-        margin-left: 20px; } }
+        margin-left: 20px;
+        margin-right: 20px; } }
 
 .navbar {
   position: relative; }
