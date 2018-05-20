@@ -31,9 +31,9 @@ class Shortener extends Component {
         this.setState({formValues})
     }
 
-    componentDidUpdate(){
-        console.log(this.state);
-    }
+    // componentDidUpdate(){
+    //     console.log(this.state);
+    // }
 
     callApiShorten = async () => {
         
