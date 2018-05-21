@@ -48,12 +48,16 @@ class Posts extends Component {
                     {
                         this.state.records.map(record => {
                             return (
-                                <article
-                                    className="Post"
-                                    key={record._id}>
-                                    <h1>{record.long_url}</h1>
-                                    {record.message}
-                                </article>
+                                <Post 
+                                message={record.message} 
+                                long_url={record.long_url}
+                                />
+                                // <article
+                                //     className="Post"
+                                //     key={record._id}>
+                                //     <h1>{record.long_url}</h1>
+                                //     {record.message}
+                                // </article>
                             );
                         })
                     }
