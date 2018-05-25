@@ -34,14 +34,13 @@ app.post('/api/shorten', function (req, res) {
     message: message
   });
 
-  var link_id = '';
   // save the new link
   newUrl.save(function (err) {
     if (err) {
       console.log(err);
     }
 
-    link_id = base58.encode(newUrl._id);
+    var link_id = base58.encode(newUrl._id);
     shortUrl = config.webhost + link_id;
 
     res.send({ 'shortUrl': shortUrl });
@@ -51,9 +50,9 @@ app.post('/api/shorten', function (req, res) {
       'long_url', longUrl,
       'message', message,
       function (err, reply) {
-        // This will either result in an error (flush parameter is set to true)
-        // or will silently fail and this callback will not be called at all (flush set to false)
-        console.log(err);
+        if (err){
+          console.log(err);
+        }
       });
   });
 
@@ -78,16 +77,37 @@ app.get('/:encoded_id', function (req, res) {
 
   var id = base58.decode(base58Id);
 
-  Url.findOne({ _id: id }, function (err, doc) {
-    if (doc) {
+  // try to get from cache
+  cache.hgetall(base58Id, function (err, obj) {
+    if (obj){
+      // console.log('redis');
       res.json({
-        long_url: doc.long_url,
-        message: doc.message
+        long_url: obj.long_url,
+        message: obj.message
       });
     } else {
-      res.json({
-        long_url: null,
-        message: null
+      // console.log('mongo');
+      Url.findOne({ _id: id }, function (err, doc) {
+        if (doc) {
+          res.json({
+            long_url: doc.long_url,
+            message: doc.message
+          });
+          cache.hmset(base58Id,
+            'long_url', doc.long_url,
+            'message', doc.message,
+            function (err, reply) {
+              if (err) {
+                console.log(err);
+              }
+            });
+        } else {
+          // *** change err behavior?? ***
+          res.json({
+            long_url: null,
+            message: null
+          });
+        }
       });
     }
   });
