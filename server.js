@@ -19,9 +19,44 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.get('/', function (req, res) {
-  res.sendFile(path.join(__dirname, 'views/index.html'));
-});
+// app.get('/', function (req, res) {
+//   res.sendFile(path.join(__dirname, 'views/index.html'));
+// });
+
+function updateRecentPost(longUrl, message) {
+  var counter = 1;
+  var post = JSON.stringify(
+    {
+      "long_url": longUrl,
+      "message": message
+    });
+  // access redis counter for recent (posts) 
+  cache.get('counter', function (err, res) {
+    if (err) {
+      console.log(err);
+    } else if (res) {
+      counter = +res + 1;
+      cache.incr('counter');
+    } else {
+      cache.set('counter', 1);
+    }
+
+    cache.zrank('recent', post, function (err, res) {
+      // if post not in cache recent
+      if (res == null) {
+        cache.zcard('recent', function (err, res) {
+          // and that recent length = 10
+          if (res > 10) {
+            cache.zremrangebyrank('recent', 0, 0);
+          }
+        })
+      }
+    })
+    cache.zadd("recent", counter, post);
+  });
+}
+
+
 
 app.post('/api/shorten', function (req, res) {
   var longUrl = req.body.url;
@@ -38,27 +73,31 @@ app.post('/api/shorten', function (req, res) {
   newUrl.save(function (err) {
     if (err) {
       console.log(err);
+    } else {
+
+      var link_id = base58.encode(newUrl._id);
+      shortUrl = config.webhost + link_id;
+
+      res.send({ 'shortUrl': shortUrl });
+
+      // save new link to redis
+      cache.hmset(link_id,
+        'long_url', longUrl,
+        'message', message,
+        function (err, reply) {
+          if (err) {
+            console.log(err);
+          } else {
+            updateRecentPost(longUrl, message);
+          }
+        });
     }
-
-    var link_id = base58.encode(newUrl._id);
-    shortUrl = config.webhost + link_id;
-
-    res.send({ 'shortUrl': shortUrl });
-
-    // save new link to redis
-    cache.hmset(link_id,
-      'long_url', longUrl,
-      'message', message,
-      function (err, reply) {
-        if (err){
-          console.log(err);
-        }
-      });
   });
 
 });
 
 app.get('/all', function (req, res) {
+
 
   Url.find({}, function (err, docs) {
     var records = [];
@@ -79,7 +118,7 @@ app.get('/:encoded_id', function (req, res) {
 
   // try to get from cache
   cache.hgetall(base58Id, function (err, obj) {
-    if (obj){
+    if (obj) {
       // console.log('redis');
       res.json({
         long_url: obj.long_url,
