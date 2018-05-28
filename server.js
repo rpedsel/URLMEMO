@@ -46,7 +46,7 @@ function updateRecentPost(longUrl, message) {
       if (res == null) {
         cache.zcard('recent', function (err, res) {
           // and that recent length = 10
-          if (res > 10) {
+          if (res > 20) {
             cache.zremrangebyrank('recent', 0, 0);
           }
         })
@@ -97,18 +97,26 @@ app.post('/api/shorten', function (req, res) {
 });
 
 app.get('/all', function (req, res) {
+  // Url.find({}, function (err, docs) {
+  //   var records = [];
 
+  //   docs.forEach(function (doc) {
+  //     records.push(doc);
+  //   });
 
-  Url.find({}, function (err, docs) {
-    var records = [];
-
-    docs.forEach(function (doc) {
-      records.push(doc);
-    });
-
-    res.json(records);
-  })
-})
+  //   res.json(records);
+  // })
+  cache.zrange('recent', 0, -1, function (err, docs) {
+    if (docs) {
+      var records = [];
+      docs.forEach(function (doc) {
+        console.log(JSON.parse(doc));
+        records.push(JSON.parse(doc));
+      });
+      res.json(records);
+    }
+  });
+});
 
 app.get('/:encoded_id', function (req, res) {
 
@@ -124,6 +132,7 @@ app.get('/:encoded_id', function (req, res) {
         long_url: obj.long_url,
         message: obj.message
       });
+      updateRecentPost(obj.long_url, obj.message);
     } else {
       // console.log('mongo');
       Url.findOne({ _id: id }, function (err, doc) {
@@ -140,6 +149,7 @@ app.get('/:encoded_id', function (req, res) {
                 console.log(err);
               }
             });
+          updateRecentPost(doc.long_url, doc.message);
         } else {
           // *** change err behavior?? ***
           res.json({
@@ -149,6 +159,7 @@ app.get('/:encoded_id', function (req, res) {
         }
       });
     }
+
   });
 
 });
