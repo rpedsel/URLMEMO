@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
-import { Route } from 'react-router-dom';
-import Post from './Post';
 
-//import './Courses.css';
+import Post from './Post';
 
 class Posts extends Component {
 
@@ -14,8 +12,6 @@ class Posts extends Component {
         this.callApi()
             .then(res => this.setState({
             records: res,
-            //long_url: res.long_url,
-            //message: res.message
             }))
             .catch(err => console.log(err));
         
@@ -32,14 +28,6 @@ class Posts extends Component {
 
     return body;
     };
-
-
-    // courseSelectedHandler = (id, title) => {
-    //     // this.props.history.push({pathname: '/posts/' + id});
-    //     this.props.history.push({
-    //         pathname: this.props.match.url + '/' + id,
-    //         search: '?title='+title});
-    // }
     
     render() {
         return (
@@ -52,17 +40,10 @@ class Posts extends Component {
                                 message={record.message} 
                                 long_url={record.long_url}
                                 />
-                                // <article
-                                //     className="Post"
-                                //     key={record._id}>
-                                //     <h1>{record.long_url}</h1>
-                                //     {record.message}
-                                // </article>
                             );
                         })
                     }
                 </section>
-            {/* <Route path={this.props.match.url + "/:id"} component={Post} /> */}
             </div>
         );
     }

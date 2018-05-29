@@ -110,7 +110,7 @@ app.get('/all', function (req, res) {
     if (docs) {
       var records = [];
       docs.forEach(function (doc) {
-        console.log(JSON.parse(doc));
+        // console.log(JSON.parse(doc));
         records.push(JSON.parse(doc));
       });
       res.json(records);
