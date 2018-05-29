@@ -37,6 +37,7 @@ class Posts extends Component {
                         this.state.records.map(record => {
                             return (
                                 <Post 
+                                key={record.short_url}
                                 message={record.message} 
                                 long_url={record.long_url}
                                 />
