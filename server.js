@@ -23,12 +23,13 @@ app.use(express.static(path.join(__dirname, 'public')));
 //   res.sendFile(path.join(__dirname, 'views/index.html'));
 // });
 
-function updateRecentPost(longUrl, message) {
+function updateRecentPost(longUrl, shortUrl, message) {
   var counter = 1;
   var post = JSON.stringify(
     {
       "long_url": longUrl,
-      "message": message
+      "message": message,
+      "short_url": shortUrl
     });
   // access redis counter for recent (posts) 
   cache.get('counter', function (err, res) {
@@ -88,7 +89,7 @@ app.post('/api/shorten', function (req, res) {
           if (err) {
             console.log(err);
           } else {
-            updateRecentPost(longUrl, message);
+            updateRecentPost(longUrl, shortUrl, message);
           }
         });
     }
@@ -106,11 +107,11 @@ app.get('/all', function (req, res) {
 
   //   res.json(records);
   // })
-  cache.zrange('recent', 0, -1, function (err, docs) {
+  cache.zrevrange('recent', 0, -1, function (err, docs) {
     if (docs) {
       var records = [];
       docs.forEach(function (doc) {
-        // console.log(JSON.parse(doc));
+        console.log(JSON.parse(doc));
         records.push(JSON.parse(doc));
       });
       res.json(records);
@@ -149,7 +150,7 @@ app.get('/:encoded_id', function (req, res) {
                 console.log(err);
               }
             });
-          updateRecentPost(doc.long_url, doc.message);
+          updateRecentPost(doc.long_url, config.webhost + id, doc.message);
         } else {
           // *** change err behavior?? ***
           res.json({
