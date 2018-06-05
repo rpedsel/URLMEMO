@@ -77,7 +77,7 @@ app.post('/api/shorten', function (req, res) {
     } else {
 
       var link_id = base58.encode(newUrl._id);
-      shortUrl = config.webhost + link_id;
+      shortUrl = config.webhost + '/api/' + link_id;
 
       res.send({ 'shortUrl': shortUrl });
 
@@ -111,7 +111,7 @@ app.get('/all', function (req, res) {
     if (docs) {
       var records = [];
       docs.forEach(function (doc) {
-        console.log(JSON.parse(doc));
+        //console.log(JSON.parse(doc));
         records.push(JSON.parse(doc));
       });
       res.json(records);
@@ -119,7 +119,7 @@ app.get('/all', function (req, res) {
   });
 });
 
-app.get('/:encoded_id', function (req, res) {
+app.get('/api/:encoded_id', function (req, res) {
 
   var base58Id = req.params.encoded_id;
 
@@ -133,7 +133,7 @@ app.get('/:encoded_id', function (req, res) {
         long_url: obj.long_url,
         message: obj.message
       });
-      updateRecentPost(obj.long_url, obj.message);
+      updateRecentPost(obj.long_url, config.webhost + '/message/' + base58Id, obj.message);
     } else {
       // console.log('mongo');
       Url.findOne({ _id: id }, function (err, doc) {
@@ -150,7 +150,7 @@ app.get('/:encoded_id', function (req, res) {
                 console.log(err);
               }
             });
-          updateRecentPost(doc.long_url, config.webhost + id, doc.message);
+          updateRecentPost(doc.long_url, config.webhost + '/message/' + base58Id, doc.message);
         } else {
           // *** change err behavior?? ***
           res.json({
@@ -164,6 +164,15 @@ app.get('/:encoded_id', function (req, res) {
   });
 
 });
+
+// Serve static files from the React app
+app.use(express.static(path.join(__dirname, 'client/build')));
+
+app.get('/*', function (req, res) {
+  res.sendFile(path.join(__dirname, 'client/build', 'index.html'));
+});
+
+
 
 var server = app.listen(3001, function () {
   console.log('Server listening on port 3001');

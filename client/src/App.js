@@ -13,8 +13,8 @@ class App extends Component {
         <Layout>
             <Switch>
               <Route path="/posts" component={Posts} />
+              <Route path="/message/:id" component={Message} />
               <Route path="/" exact component={Shortener} />
-              <Route path="/:id" component={Message} />
             </Switch>
         </Layout>
       </Aux>
