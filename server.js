@@ -131,7 +131,7 @@ app.get('/api/:encoded_id', function (req, res) {
         long_url: obj.long_url,
         message: obj.message
       });
-      updateRecentPost(obj.long_url, config.webhost + '/message/' + base58Id, obj.message);
+      updateRecentPost(obj.long_url, base58Id, obj.message);
     } else {
       // console.log('mongo');
       Url.findOne({ _id: id }, function (err, doc) {
@@ -148,7 +148,7 @@ app.get('/api/:encoded_id', function (req, res) {
                 console.log(err);
               }
             });
-          updateRecentPost(doc.long_url, config.webhost + '/message/' + base58Id, doc.message);
+          updateRecentPost(doc.long_url, base58Id, doc.message);
         } else {
           // *** change err behavior?? ***
           res.json({
