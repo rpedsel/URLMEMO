@@ -75,10 +75,8 @@ app.post('/api/shorten', function (req, res) {
     if (err) {
       console.log(err);
     } else {
-
       var link_id = base58.encode(newUrl._id);
-      shortUrl = config.webhost + '/message/' + link_id;
-
+      shortUrl = link_id;
       res.send({ 'shortUrl': shortUrl });
 
       // save new link to redis
