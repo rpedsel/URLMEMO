@@ -42,21 +42,41 @@ mongo
 ```
 #### [Redis](https://redis.io)
 
+The application caches recently stored / accessed data using Redis. To install:
+```bash
+wget http://download.redis.io/redis-stable.tar.gz
+tar xvzf redis-stable.tar.gz
+cd redis-stable
+make
+# run test
+make test
+# copy both the Redis server and the command line interface in proper places
+sudo make install
+```
+[(Redis Quick Start)](https://redis.io/topics/quickstart)
+
+*P.S.* When I am moving the project onto AWS (EC2 Ubuntu Instance), I met some error running **make** when installing Redis (error wrt "jemalloc"), running **make MALLOC=libc** instead solved the problem for me.
 
 ### Installation for the Project
 
-A step by step series of examples that tell you how to get a development env running
+First clone a copy of this project onto your machine.
 
-Say what the step will be
-
-```
-Give the example
+```bash
+git clone https://github.com/rpedsel/URLMEMO.git
 ```
 
-And repeat
-
+I am using **yarn** so you might need to have it installed:
+```bash
+npm i yarn
 ```
-until finished
+Then enter the project directory and install packages
+
+```bash
+cd URLMEMO
+yarn # or npm install
+# install cleint side create-react-app
+cd client 
+## To becontinued ##
 ```
 
 End with an example of getting some data out of the system or using it for a little demo
