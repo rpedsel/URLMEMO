@@ -78,29 +78,4 @@ yarn # or npm install
 cd client 
 ## To becontinued ##
 ```
-
-End with an example of getting some data out of the system or using it for a little demo
-
-
-
-
-## Deployment
-
-Add additional notes about how to deploy this on a live system
-
-## Built With
-
-* [something](http://www.dropwizard.io/1.0.2/docs/) - The web framework used
-* [someother](https://maven.apache.org/) - Dependency Management
-* [another](https://rometools.github.io/rome/) - Used to generate RSS Feeds
-
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
-
-## Acknowledgments
-
-* Hat tip to anyone whose code was used
-* Inspiration
-* etc
+#(((TO BE CONTINUED)))
